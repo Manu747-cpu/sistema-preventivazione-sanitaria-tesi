@@ -1,0 +1,10 @@
+﻿@{
+    ViewData["Title"] = "Benvenuto";
+}
+
+<h1 class="my-4">Benvenuto, @User.Identity.Name!</h1>
+<p>Per iniziare, seleziona la categoria di polizza:</p>
+
+<a asp-controller="Utente" asp-action="Seleziona" class="btn btn-primary">
+    Vai alla selezione
+</a>

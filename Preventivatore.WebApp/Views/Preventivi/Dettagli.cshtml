@@ -1,0 +1,95 @@
+@model Preventivatore.WebApp.ViewModels.PreventivoDettaglioViewModel
+
+@{
+    ViewData["Title"] = "Dettagli preventivo";
+}
+
+<h1 class="mb-3">Dettagli preventivo</h1>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <dl class="row mb-0">
+            <dt class="col-sm-3">ID</dt>
+            <dd class="col-sm-9">@Model.Id</dd>
+
+            <dt class="col-sm-3">Sottocategoria</dt>
+            <dd class="col-sm-9">@Model.SubCategoriaNome (@Model.SubCategoriaId)</dd>
+
+            <dt class="col-sm-3">Macrocategoria</dt>
+            <dd class="col-sm-9">
+                @(string.IsNullOrWhiteSpace(Model.MacroCategoriaNome) ? "Non disponibile" : Model.MacroCategoriaNome)
+            </dd>
+
+            <dt class="col-sm-3">Riga</dt>
+            <dd class="col-sm-9">@Model.RowKey</dd>
+
+            <dt class="col-sm-3">Colonna</dt>
+            <dd class="col-sm-9">@Model.ColKey</dd>
+
+            <dt class="col-sm-3">Valore</dt>
+            <dd class="col-sm-9">@Model.Value</dd>
+
+            <dt class="col-sm-3">Data</dt>
+            <dd class="col-sm-9">@Model.DataCreazione.ToString("dd/MM/yyyy HH:mm:ss")</dd>
+
+            <dt class="col-sm-3">Stato</dt>
+            <dd class="col-sm-9">
+                <span class="badge bg-secondary">@Model.Stato</span>
+            </dd>
+        </dl>
+    </div>
+</div>
+
+<h4>Documenti disponibili</h4>
+
+@if (Model.Documenti != null && Model.Documenti.Any())
+{
+    <div class="table-responsive mb-4">
+        <table class="table table-bordered align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Nome file</th>
+                    <th>Polizza</th>
+                    <th style="width:140px">Azione</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var doc in Model.Documenti)
+                {
+                    <tr>
+                        <td>@doc.NomeFile</td>
+                        <td>@doc.NomePolizza</td>
+                        <td>
+                            <a asp-action="DownloadDocumento"
+                               asp-route-id="@doc.Id"
+                               class="btn btn-sm btn-outline-primary">
+                                Scarica
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <div class="alert alert-light border mb-4">
+        Nessun documento disponibile per questa categoria.
+    </div>
+}
+
+<div class="d-flex gap-2 mt-3">
+
+    <a asp-action="ScaricaRiepilogo"
+       asp-route-id="@Model.Id"
+       class="btn btn-success">
+        Scarica riepilogo preventivo
+    </a>
+
+    <a class="btn btn-secondary"
+       asp-action="Miei">
+        Torna ai miei preventivi
+    </a>
+
+</div>

@@ -1,0 +1,45 @@
+﻿@model Preventivatore.Core.Entities.MacroCategoriaPolizza
+
+@{
+    ViewData["Title"] = "Nuova Macrocategoria";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<form asp-action="Create" method="post" enctype="multipart/form-data">
+    @Html.AntiForgeryToken()
+
+    <div class="mb-3">
+        <label asp-for="Nome" class="form-label"></label>
+        <input asp-for="Nome" class="form-control" />
+        <span asp-validation-for="Nome" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Descrizione" class="form-label"></label>
+        <textarea asp-for="Descrizione" class="form-control" rows="3"></textarea>
+        <span asp-validation-for="Descrizione" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label for="ImmagineFile" class="form-label">Immagine rappresentativa</label>
+        <!-- Non usiamo asp-for, ma name="ImmagineFile" -->
+        <input id="ImmagineFile" name="ImmagineFile" type="file"
+               class="form-control" accept=".jpg,.jpeg,.png" />
+        <!-- Se vuoi, puoi lasciare uno span vuoto per mostrare messaggi custom -->
+        <span class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">
+        <i class="bi bi-save"></i> Salva
+    </button>
+    <a asp-action="Index" class="btn btn-secondary ms-2">
+        Annulla
+    </a>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

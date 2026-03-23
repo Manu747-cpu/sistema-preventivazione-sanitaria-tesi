@@ -1,0 +1,89 @@
+﻿@model Preventivatore.WebApp.ViewModels.PolizzaFormViewModel
+
+@{
+    ViewData["Title"] = "Crea Nuova Polizza";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<form asp-action="Create" method="post" enctype="multipart/form-data">
+    @Html.AntiForgeryToken()
+
+    <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+    <div class="mb-3">
+        <label asp-for="Nome" class="form-label"></label>
+        <input asp-for="Nome" class="form-control" />
+        <span asp-validation-for="Nome" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Descrizione" class="form-label"></label>
+        <textarea asp-for="Descrizione" class="form-control" rows="3"></textarea>
+        <span asp-validation-for="Descrizione" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="MacroCategoriaId" class="form-label"></label>
+        <select asp-for="MacroCategoriaId"
+                asp-items="Model.MacroCategorie"
+                class="form-select"></select>
+        <span asp-validation-for="MacroCategoriaId" class="text-danger"></span>
+    </div>
+
+    <h5 class="mt-4">Ricarico Admin</h5>
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <label asp-for="ImportoAdmin" class="form-label"></label>
+            <input asp-for="ImportoAdmin" class="form-control" />
+            <span asp-validation-for="ImportoAdmin" class="text-danger"></span>
+        </div>
+        <div class="col-md-6">
+            <label asp-for="PercentualeAdmin" class="form-label"></label>
+            <input asp-for="PercentualeAdmin" class="form-control" />
+            <span asp-validation-for="PercentualeAdmin" class="text-danger"></span>
+        </div>
+    </div>
+
+    <h5 class="mt-4">Servizi Aggiuntivi</h5>
+    <div class="mb-3">
+        @if (Model.ServiziAggiuntivi != null && Model.ServiziAggiuntivi.Any())
+        {
+            @foreach (var item in Model.ServiziAggiuntivi)
+            {
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input"
+                           type="checkbox"
+                           name="SelectedServizi"
+                           value="@item.Value"
+                           @(Model.SelectedServizi.Contains(int.Parse(item.Value)) ? "checked" : null) />
+                    <label class="form-check-label">@item.Text</label>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="text-muted">Nessun servizio aggiuntivo disponibile.</div>
+        }
+    </div>
+
+    <h5 class="mt-4">Documenti</h5>
+    <div class="mb-3">
+        <label asp-for="Documenti" class="form-label">Documenti Polizza</label>
+        <input asp-for="Documenti"
+               type="file"
+               multiple
+               class="form-control" />
+        <span asp-validation-for="Documenti" class="text-danger"></span>
+        <div class="form-text">È possibile selezionare più file contemporaneamente.</div>
+    </div>
+
+    <button type="submit" class="btn btn-success">Salva</button>
+    <a asp-action="Index" class="btn btn-secondary ms-2">Annulla</a>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

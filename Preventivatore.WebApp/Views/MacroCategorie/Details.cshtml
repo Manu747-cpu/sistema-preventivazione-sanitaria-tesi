@@ -1,0 +1,132 @@
+﻿@model Preventivatore.Core.Entities.MacroCategoriaPolizza
+@using System
+
+@{
+    ViewData["Title"] = "Dettagli Macrocategoria";
+
+    string? imageUrl = null;
+
+    if (!string.IsNullOrWhiteSpace(Model.UrlImmagine))
+    {
+        if (Model.UrlImmagine.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ||
+            Model.UrlImmagine.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
+        {
+            imageUrl = Model.UrlImmagine;
+        }
+        else
+        {
+            imageUrl = Url.Content(Model.UrlImmagine);
+        }
+    }
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="card mb-4 shadow-sm" style="max-width: 760px;">
+    <div class="row g-0">
+        <div class="col-md-4">
+            @if (!string.IsNullOrWhiteSpace(imageUrl))
+            {
+                <img src="@imageUrl"
+                     alt="@Model.Nome"
+                     class="img-fluid rounded-start w-100"
+                     style="height: 260px; object-fit: cover;"
+                     onerror="this.style.display='none';" />
+            }
+            else
+            {
+                <div class="d-flex align-items-center justify-content-center text-muted bg-light rounded-start"
+                     style="height: 260px;">
+                    Nessuna immagine
+                </div>
+            }
+        </div>
+
+        <div class="col-md-8">
+            <div class="card-body">
+                <h4 class="card-title mb-3">@Model.Nome</h4>
+
+                <p class="card-text mb-3">
+                    @(string.IsNullOrWhiteSpace(Model.Descrizione)
+                        ? "Nessuna descrizione disponibile."
+                        : Model.Descrizione)
+                </p>
+
+                <p class="card-text mb-0">
+                    <small class="text-muted">ID: @Model.Id</small>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mb-4">
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-secondary me-1">
+        <i class="bi bi-pencil"></i> Modifica
+    </a>
+
+    <a asp-action="Index" class="btn btn-primary">
+        <i class="bi bi-arrow-left"></i> Indietro
+    </a>
+</div>
+
+<hr />
+
+<h2>Sottocategorie</h2>
+
+<p>
+    <a asp-controller="SubCategorie"
+       asp-action="Index"
+       asp-route-macroId="@Model.Id"
+       class="btn btn-info">
+        Gestisci Sottocategorie
+    </a>
+</p>
+
+<table class="table table-striped table-hover align-middle">
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th class="text-end">Azioni</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.SubCategorie != null && Model.SubCategorie.Any())
+        {
+            foreach (var sub in Model.SubCategorie)
+            {
+                <tr>
+                    <td>@sub.Nome</td>
+                    <td class="text-end">
+                        <a asp-controller="SubCategorie"
+                           asp-action="Edit"
+                           asp-route-id="@sub.Id"
+                           class="btn btn-sm btn-secondary me-1">
+                            <i class="bi bi-pencil"></i> Modifica
+                        </a>
+
+                        <form asp-controller="SubCategorie"
+                              asp-action="Delete"
+                              asp-route-id="@sub.Id"
+                              method="post"
+                              class="d-inline">
+                            <button type="submit"
+                                    class="btn btn-sm btn-danger"
+                                    onclick="return confirm('Eliminare la sottocategoria @sub.Nome?');">
+                                <i class="bi bi-trash"></i> Elimina
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="2" class="text-center text-muted">
+                    Nessuna sottocategoria.
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

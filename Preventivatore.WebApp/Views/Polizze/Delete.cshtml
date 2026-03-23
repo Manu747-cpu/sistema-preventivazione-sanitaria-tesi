@@ -1,0 +1,16 @@
+﻿@model Preventivatore.WebApp.ViewModels.PolizzaGridViewModel
+
+@{
+    ViewData["Title"] = "Elimina Polizza";
+}
+<h1>@ViewData["Title"]</h1>
+<h3>Sei sicuro di voler eliminare: @Model.Nome?</h3>
+
+<form asp-action="Delete"
+      asp-route-id="@Model.Id"
+      method="post">
+    @* token anti-CSRF *@
+    @Html.AntiForgeryToken()
+    <button type="submit" class="btn btn-danger">Sì, elimina</button>
+    <a asp-action="Index" class="btn btn-secondary">No, annulla</a>
+</form>

@@ -1,0 +1,142 @@
+﻿@model Preventivatore.WebApp.ViewModels.SubCategoriaViewModel
+@{
+    var isNew = Model.Id == 0;
+    ViewData["Title"] = (isNew ? "Nuova" : "Modifica") + " Sottocategoria";
+}
+
+<h1>@ViewData["Title"] per Macrocategoria @Model.MacroCategoriaPolizzaId</h1>
+
+<form asp-action="@(isNew ? "Create" : "Edit")" method="post">
+    <input asp-for="Id" type="hidden" />
+    <input asp-for="MacroCategoriaPolizzaId" type="hidden" />
+
+    <div class="mb-3">
+        <label asp-for="Nome" class="form-label">Nome</label>
+        <input asp-for="Nome" class="form-control" />
+        <span asp-validation-for="Nome" class="text-danger"></span>
+    </div>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th colspan="@(Model.Colonne.Count + 1)">
+                    <input asp-for="TableHeader"
+                           class="form-control fw-bold text-center"
+                           placeholder="Titolo tabella" />
+                </th>
+            </tr>
+            <tr>
+                <th style="width:150px">
+                    <input asp-for="CornerText"
+                           class="form-control fw-bold text-center"
+                           placeholder="Etichetta angolo" />
+                </th>
+                @for (int c = 0; c < Model.Colonne.Count; c++)
+                {
+                    <th>
+                        <input name="Colonne[@c]"
+                               value="@Model.Colonne[c]"
+                               class="form-control"
+                               placeholder="Colonna @(c + 1)" />
+                    </th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @for (int r = 0; r < Model.Righe.Count; r++)
+            {
+                <tr>
+                    <td>
+                        <input name="Righe[@r]"
+                               value="@Model.Righe[r]"
+                               class="form-control"
+                               placeholder="Riga @(r + 1)" />
+                    </td>
+                    @for (int c = 0; c < Model.Colonne.Count; c++)
+                    {
+                        <td>
+                            <input name="Celle[@r][@c]"
+                                   value="@Model.Celle[r][c]"
+                                   class="form-control"
+                                   placeholder="Valore cella" />
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="mb-3">
+        <button type="button" id="add-col" class="btn btn-sm btn-outline-primary">+ Colonna</button>
+        <button type="button" id="del-col" class="btn btn-sm btn-outline-danger">- Colonna</button>
+        <button type="button" id="add-row" class="btn btn-sm btn-outline-primary">+ Riga</button>
+        <button type="button" id="del-row" class="btn btn-sm btn-outline-danger">- Riga</button>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Salva</button>
+    <a asp-action="Index"
+       asp-route-macroId="@Model.MacroCategoriaPolizzaId"
+       class="btn btn-secondary">Annulla</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        let colCount = @Model.Colonne.Count;
+        let rowCount = @Model.Righe.Count;
+
+        const tbl = document.querySelector("table.table-bordered");
+        const thead = tbl.querySelector("thead");
+        const tbody = tbl.querySelector("tbody");
+
+        document.getElementById("add-col").addEventListener("click", () => {
+            // aggiungi header
+            const thRow = thead.querySelectorAll("tr")[1];
+            const th = document.createElement("th");
+            th.innerHTML = `<input name="Colonne[${colCount}]" class="form-control" placeholder="Colonna ${colCount+1}" />`;
+            thRow.appendChild(th);
+
+            // aggiungi cella per ogni riga
+            tbody.querySelectorAll("tr").forEach((tr, r) => {
+                const td = document.createElement("td");
+                td.innerHTML = `<input name="Celle[${r}][${colCount}]" class="form-control" placeholder="Valore cella" />`;
+                tr.appendChild(td);
+            });
+
+            colCount++;
+            thead.querySelector("tr:first-child th").colSpan = colCount + 1;
+        });
+
+        document.getElementById("del-col").addEventListener("click", () => {
+            if (colCount === 0) return;
+            const thRow = thead.querySelectorAll("tr")[1];
+            thRow.removeChild(thRow.lastElementChild);
+            tbody.querySelectorAll("tr").forEach(tr => {
+                tr.removeChild(tr.lastElementChild);
+            });
+            colCount--;
+            thead.querySelector("tr:first-child th").colSpan = colCount + 1;
+        });
+
+        document.getElementById("add-row").addEventListener("click", () => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `<td>
+                <input name="Righe[${rowCount}]" class="form-control" placeholder="Riga ${rowCount+1}" />
+            </td>`;
+            for (let c = 0; c < colCount; c++) {
+                const td = document.createElement("td");
+                td.innerHTML = `<input name="Celle[${rowCount}][${c}]" class="form-control" placeholder="Valore cella" />`;
+                tr.appendChild(td);
+            }
+            tbody.appendChild(tr);
+            rowCount++;
+        });
+
+        document.getElementById("del-row").addEventListener("click", () => {
+            if (rowCount === 0) return;
+            tbody.removeChild(tbody.lastElementChild);
+            rowCount--;
+        });
+    </script>
+}

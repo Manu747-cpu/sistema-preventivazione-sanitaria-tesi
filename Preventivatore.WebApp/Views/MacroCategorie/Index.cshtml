@@ -1,0 +1,87 @@
+﻿@model IEnumerable<Preventivatore.Core.Entities.MacroCategoriaPolizza>
+@using System
+
+@{
+    ViewData["Title"] = "Elenco Macrocategorie";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">
+        <i class="bi bi-plus-circle"></i> Nuova Macrocategoria
+    </a>
+</p>
+
+<table class="table table-striped table-hover align-middle">
+    <thead class="table-light">
+        <tr>
+            <th>Nome</th>
+            <th>Descrizione</th>
+            <th>Immagine</th>
+            <th class="text-end">Azioni</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            string? imageUrl = null;
+
+            if (!string.IsNullOrWhiteSpace(item.UrlImmagine))
+            {
+                if (item.UrlImmagine.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ||
+                    item.UrlImmagine.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
+                {
+                    imageUrl = item.UrlImmagine;
+                }
+                else
+                {
+                    imageUrl = Url.Content(item.UrlImmagine);
+                }
+            }
+
+            <tr>
+                <td>@item.Nome</td>
+                <td>@item.Descrizione</td>
+                <td>
+                    @if (!string.IsNullOrWhiteSpace(imageUrl))
+                    {
+                        <img src="@imageUrl"
+                             alt="@item.Nome"
+                             style="height:50px; width:80px; object-fit:cover; border-radius:6px;"
+                             onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';" />
+                        <span class="text-muted" style="display:none;">Immagine non disponibile</span>
+                    }
+                    else
+                    {
+                        <span class="text-muted">—</span>
+                    }
+                </td>
+                <td class="text-end">
+                    <a asp-action="Details"
+                       asp-route-id="@item.Id"
+                       class="btn btn-sm btn-info me-1">
+                        Dettagli
+                    </a>
+
+                    <a asp-action="Edit"
+                       asp-route-id="@item.Id"
+                       class="btn btn-sm btn-secondary me-1">
+                        Modifica
+                    </a>
+
+                    <form asp-action="Delete"
+                          asp-route-id="@item.Id"
+                          method="post"
+                          class="d-inline">
+                        <button type="submit"
+                                class="btn btn-sm btn-danger"
+                                onclick="return confirm('Confermi eliminazione?');">
+                            Elimina
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

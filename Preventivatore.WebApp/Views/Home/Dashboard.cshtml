@@ -1,0 +1,59 @@
+﻿@* Views/Home/Dashboard.cshtml *@
+@model Preventivatore.WebApp.Models.DashboardViewModel
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+
+@{
+    ViewData["Title"] = "Dashboard";
+    var companyName = Configuration["Company:Name"] ?? "Preventivatore";
+    var companySubtitle = Configuration["Company:Subtitle"] ?? "";
+}
+
+<div class="container my-5">
+    <div class="row justify-content-center mb-4">
+        <div class="col-lg-10">
+            <div class="dashboard-hero text-center">
+                <div class="dashboard-hero-badge mb-3">Area amministrativa</div>
+                <h1 class="dashboard-title mb-2">@companyName</h1>
+                <p class="dashboard-subtitle mb-1">
+                    Dashboard amministrativa del sistema di gestione e preventivazione assicurativa.
+                </p>
+                @if (!string.IsNullOrWhiteSpace(companySubtitle))
+                {
+                    <p class="text-muted mb-0">@companySubtitle</p>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 justify-content-center mb-2" aria-label="Sezioni amministrazione">
+        <div class="col-12 col-md-6 col-lg-4">
+            <a asp-controller="MacroCategorie"
+               asp-action="Index"
+               class="card-product card-product-large d-flex flex-column align-items-center justify-content-center text-center">
+                <i class="bi bi-grid-3x3-gap fs-1"></i>
+                <span class="card-product-title">Macrocategorie</span>
+                <small class="card-product-subtitle">Gestione categorie assicurative e sottocategorie</small>
+            </a>
+        </div>
+
+        <div class="col-12 col-md-6 col-lg-4">
+            <a asp-controller="Polizze"
+               asp-action="Index"
+               class="card-product card-product-large d-flex flex-column align-items-center justify-content-center text-center">
+                <i class="bi bi-journal-text fs-1"></i>
+                <span class="card-product-title">Polizze</span>
+                <small class="card-product-subtitle">Gestione polizze, servizi aggiuntivi e documenti</small>
+            </a>
+        </div>
+
+        <div class="col-12 col-md-6 col-lg-4">
+            <a asp-controller="AdminPreventivi"
+               asp-action="Index"
+               class="card-product card-product-large d-flex flex-column align-items-center justify-content-center text-center">
+                <i class="bi bi-clipboard-check fs-1"></i>
+                <span class="card-product-title">Preventivi</span>
+                <small class="card-product-subtitle">Monitoraggio richieste, stato e dettaglio preventivi</small>
+            </a>
+        </div>
+    </div>
+</div>

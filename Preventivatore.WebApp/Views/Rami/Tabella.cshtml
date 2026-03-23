@@ -1,0 +1,46 @@
+﻿@model Preventivatore.WebApp.ViewModels.SubCategoriaIndexViewModel
+@{
+    ViewData["Title"] = "Tabella: " + Model.Nome;
+}
+<h1>@ViewData["Title"]</h1>
+<p>
+    <a asp-action="Sottocategorie"
+       asp-route-macroId="@Model.Id"
+       class="btn btn-secondary">
+        ← Torna indietro
+    </a>
+</p>
+
+<form asp-action="SelezionaValore" method="post" class="mt-3">
+    <input type="hidden" name="subId" value="@Model.Id" />
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th></th>
+                @for (int c = 0; c < Model.Colonne.Count; c++)
+                {
+                    <th>@Model.Colonne[c]</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @for (int r = 0; r < Model.Righe.Count; r++)
+            {
+                <tr>
+                    <td><strong>@Model.Righe[r]</strong></td>
+                    @for (int c = 0; c < Model.Colonne.Count; c++)
+                    {
+                        <td>
+                            <button type="submit"
+                                    name="selectedCell"
+                                    value="@($"{r};{c}")"
+                                    class="btn btn-outline-secondary w-100">
+                                @Model.Celle[r][c]
+                            </button>
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+</form>

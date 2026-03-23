@@ -1,0 +1,30 @@
+﻿@model Preventivatore.WebApp.ViewModels.TabellaViewModel
+@{
+    ViewData["Title"] = "Tabella: " + Model.NomeSubCategoria;
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th></th>
+            @foreach (var col in Model.Colonne)
+            {
+                <th>@col</th>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @for (int r = 0; r < Model.Righe.Count; r++)
+        {
+            <tr>
+                <th scope="row">@Model.Righe[r]</th>
+                @foreach (var cell in Model.Celle[r])
+                {
+                    <td>@cell</td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>

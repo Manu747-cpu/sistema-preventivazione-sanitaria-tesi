@@ -1,0 +1,18 @@
+﻿@model Preventivatore.WebApp.ViewModels.MacroCategorieViewModel
+@{
+    ViewData["Title"] = "Elenco macrocategorie";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<form asp-action="MacroCategorie" method="post">
+    <div class="mb-3">
+        <label asp-for="SelectedId" class="form-label">Macrocategoria</label>
+        <select asp-for="SelectedId"
+                asp-items="Model.MacroCategorie"
+                class="form-select">
+            <option value="">-- Seleziona --</option>
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Avanti</button>
+</form>

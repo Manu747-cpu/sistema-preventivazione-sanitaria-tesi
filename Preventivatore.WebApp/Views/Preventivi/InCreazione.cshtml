@@ -1,0 +1,18 @@
+@{
+    ViewData["Title"] = "Preventivo - pagina in creazione";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<ul>
+    <li><strong>SubCategoriaId:</strong> @ViewBag.SubCategoriaId</li>
+    <li><strong>Riga:</strong> @ViewBag.RowKey</li>
+    <li><strong>Colonna:</strong> @ViewBag.ColKey</li>
+    <li><strong>Valore:</strong> @ViewBag.Value</li>
+</ul>
+
+<hr />
+
+<div class="alert alert-warning">
+    Step successivo: salvare il preventivo in DB e associare eventuali servizi/documenti.
+</div>

@@ -1,0 +1,104 @@
+@model Preventivatore.WebApp.ViewModels.PolizzaFormViewModel
+
+@{
+    ViewData["Title"] = "Dettagli Polizza";
+}
+
+<h1 class="mb-3">@ViewData["Title"]</h1>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <h5 class="card-title mb-3">Informazioni generali</h5>
+
+        <dl class="row mb-0">
+            <dt class="col-sm-3">ID</dt>
+            <dd class="col-sm-9">@Model.Id</dd>
+
+            <dt class="col-sm-3">Nome</dt>
+            <dd class="col-sm-9">@Model.Nome</dd>
+
+            <dt class="col-sm-3">Descrizione</dt>
+            <dd class="col-sm-9">
+                @(string.IsNullOrWhiteSpace(Model.Descrizione) ? "Nessuna descrizione." : Model.Descrizione)
+            </dd>
+
+            <dt class="col-sm-3">Macrocategoria</dt>
+            <dd class="col-sm-9">
+                @(string.IsNullOrWhiteSpace(Model.MacroCategoriaNome) ? "Non disponibile" : Model.MacroCategoriaNome)
+            </dd>
+
+            <dt class="col-sm-3">Importo Admin</dt>
+            <dd class="col-sm-9">@Model.ImportoAdmin.ToString("0.00") €</dd>
+
+            <dt class="col-sm-3">% Admin</dt>
+            <dd class="col-sm-9">@Model.PercentualeAdmin.ToString("0.##") %</dd>
+
+            <dt class="col-sm-3">Servizi aggiuntivi</dt>
+            <dd class="col-sm-9">
+                @if (Model.ServiziAggiuntiviNomi != null && Model.ServiziAggiuntiviNomi.Any())
+                {
+                    <ul class="mb-0">
+                        @foreach (var nome in Model.ServiziAggiuntiviNomi)
+                        {
+                            <li>@nome</li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <span class="text-muted">Nessun servizio aggiuntivo.</span>
+                }
+            </dd>
+        </dl>
+    </div>
+</div>
+
+<h4 class="mb-3">Documenti</h4>
+
+@if (Model.ExistingDocumenti != null && Model.ExistingDocumenti.Any())
+{
+    <div class="table-responsive mb-4">
+        <table class="table table-bordered align-middle shadow-sm">
+            <thead class="table-light">
+                <tr>
+                    <th>Nome file</th>
+                    <th style="width:140px">Azione</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var doc in Model.ExistingDocumenti)
+                {
+                    <tr>
+                        <td>@doc.NomeFile</td>
+                        <td>
+                            <a asp-action="DownloadDocumento"
+                               asp-route-id="@doc.Id"
+                               class="btn btn-sm btn-outline-primary">
+                                Scarica
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <div class="alert alert-light border shadow-sm">
+        Nessun documento caricato.
+    </div>
+}
+
+<div class="d-flex gap-2 mt-3">
+    <a asp-action="Edit"
+       asp-route-id="@Model.Id"
+       class="btn btn-primary">
+        Modifica
+    </a>
+
+    <a asp-action="Index"
+       class="btn btn-secondary">
+        Torna alla lista
+    </a>
+</div>

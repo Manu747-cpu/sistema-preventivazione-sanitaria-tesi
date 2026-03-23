@@ -1,0 +1,21 @@
+﻿@model Preventivatore.WebApp.ViewModels.SubCategorieViewModel
+@{
+    ViewData["Title"] = "Elenco sottocategorie";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<form asp-action="SubCategorie" method="post">
+    @* Conserva hidden il macroId per il binding *@
+    <input type="hidden" asp-for="MacroCategoriaId" />
+
+    <div class="mb-3">
+        <label asp-for="SelectedId" class="form-label">Sottocategoria</label>
+        <select asp-for="SelectedId"
+                asp-items="Model.SubCategorie"
+                class="form-select">
+            <option value="">-- Seleziona --</option>
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Avanti</button>
+</form>

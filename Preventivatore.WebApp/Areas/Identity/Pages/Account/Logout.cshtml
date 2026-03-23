@@ -1,0 +1,25 @@
+﻿@page
+@model Preventivatore.WebApp.Areas.Identity.Pages.Account.LogoutModel
+
+<header>
+    <h1>Esci</h1>
+
+    @if (User.Identity?.IsAuthenticated ?? false)
+    {
+        <form asp-area="Identity"
+              asp-page="./Logout"
+              asp-route-returnUrl="@Url.Page("/", new { area = "" })"
+              method="post">
+            <button type="submit" class="btn btn-link nav-link text-dark">
+                Logout
+            </button>
+        </form>
+    }
+    else
+    {
+        <p>Sei stato disconnesso con successo.</p>
+        <a class="btn btn-primary" asp-area="" asp-controller="Home" asp-action="Index">
+            Torna alla Home
+        </a>
+    }
+</header>

@@ -1,0 +1,53 @@
+﻿@model IEnumerable<Preventivatore.WebApp.ViewModels.SubCategoriaIndexViewModel>
+
+@{
+    ViewData["Title"] = "Sottocategorie";
+    var macroId = ViewBag.MacroId as int? ?? 0;
+}
+
+<h1>Sottocategorie per Macrocategoria @macroId</h1>
+
+<p>
+    <a asp-action="Create" asp-route-macroId="@macroId" class="btn btn-primary">Nuova Sottocategoria</a>
+    <a asp-controller="MacroCategorie" asp-action="Index" class="btn btn-secondary">Torna a Macrocategorie</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th class="text-end" style="width:150px">Azioni</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Nome</td>
+                
+                <td class="text-end">
+                                    <div class="btn-group" role="group" aria-label="Azioni">
+                                           <a asp-action="Edit" asp-route-id="@item.Id"
+                                                 class="btn btn-sm btn-warning me-1">
+                                                    Modifica
+                            
+                        </a>
+                                            <form asp-action="Delete"
+                                                    asp-route-id="@item.Id"
+                                                    method="post"
+                                                    onsubmit="return confirm('Sei sicuro?');"
+                                                    class="d-inline">
+                                                    <button type="submit" class="btn btn-sm btn-danger">
+                                                            Elimina
+                                
+                            </button>
+                            
+                        </form>
+                        
+                    </div>
+                    
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,270 @@
+﻿@model Preventivatore.WebApp.ViewModels.UtenteCombinedViewModel
+
+@{
+    ViewData["Title"] = "Scegli Categoria e Sottocategoria";
+    var hasDocs = Model.DocumentiDisponibili != null && Model.DocumentiDisponibili.Any();
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<form asp-action="Seleziona" method="post" class="mb-4">
+    @Html.AntiForgeryToken()
+
+    <div class="mb-3">
+        <label asp-for="SelectedMacroId" class="form-label">Macrocategoria</label>
+        <select asp-for="SelectedMacroId"
+                asp-items="Model.MacroCategorie"
+                class="form-select"
+                id="ddlMacro">
+            <option value="">-- Seleziona --</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="SelectedSubId" class="form-label">Sottocategoria</label>
+        <select asp-for="SelectedSubId"
+                asp-items="Model.SubCategorie"
+                class="form-select"
+                id="ddlSub">
+            <option value="">-- Seleziona --</option>
+        </select>
+        <div id="subHint" class="form-text text-muted">
+            @if (Model.SelectedMacroId.HasValue)
+            {
+                <text>Selezionare una sottocategoria.</text>
+            }
+            else
+            {
+                <text>Selezionare prima una macrocategoria.</text>
+            }
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary" id="btnMostra" @(Model.SelectedSubId.HasValue ? null : "disabled")>
+        Mostra Tabella
+    </button>
+</form>
+
+@if (Model.SelectedSubId.HasValue)
+{
+    <hr />
+    <h2>Tabella: @Model.NomeSubCategoria</h2>
+
+    <div class="table-responsive">
+        <table id="matrix" class="table table-bordered align-middle">
+            <thead>
+                <tr>
+                    <th style="width:220px">Riga</th>
+                    @for (int j = 0; j < Model.Colonne.Count; j++)
+                    {
+                        <th>@Model.Colonne[j]</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < Model.Righe.Count; i++)
+                {
+                    <tr>
+                        <th scope="row">@Model.Righe[i]</th>
+
+                        @for (int j = 0; j < Model.Colonne.Count; j++)
+                        {
+                            var v = (i < Model.Celle.Count && j < Model.Celle[i].Count) ? Model.Celle[i][j] : "";
+                            <td class="cell-select"
+                                role="button"
+                                tabindex="0"
+                                data-row="@Model.Righe[i]"
+                                data-col="@Model.Colonne[j]"
+                                data-value="@v">
+                                @v
+                            </td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div id="documentiBox" class="mt-4" style="display:none;">
+        <h4>Documenti disponibili per questa categoria</h4>
+
+        @if (hasDocs)
+        {
+            <div class="table-responsive">
+                <table class="table table-bordered align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Nome file</th>
+                            <th>Polizza</th>
+                            <th style="width:140px">Azione</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var doc in Model.DocumentiDisponibili)
+                        {
+                            <tr>
+                                <td>@doc.NomeFile</td>
+                                <td>@doc.NomePolizza</td>
+                                <td>
+                                    <a asp-controller="Preventivi"
+                                       asp-action="DownloadDocumento"
+                                       asp-route-id="@doc.Id"
+                                       class="btn btn-sm btn-outline-primary">
+                                        Scarica
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-light border">
+                Nessun documento disponibile per questa categoria.
+            </div>
+        }
+    </div>
+
+    <form asp-controller="Preventivi" asp-action="CreateFromSelection" method="post" class="mt-3">
+        @Html.AntiForgeryToken()
+
+        <input type="hidden" id="SelectedSubCategoriaId" name="subCategoriaId" value="@(Model.SelectedSubId ?? 0)" />
+        <input type="hidden" id="SelectedRowKey" name="rowKey" />
+        <input type="hidden" id="SelectedColKey" name="colKey" />
+        <input type="hidden" id="SelectedValue" name="value" />
+
+        <button id="btnCreaPreventivo" type="submit" class="btn btn-success" disabled>
+            Crea preventivo con selezione
+        </button>
+        <span id="selHint" class="ms-2 text-muted">Selezionare una cella.</span>
+    </form>
+}
+
+@section Styles {
+    <style>
+        td.cell-select {
+            cursor: pointer;
+        }
+
+        td.cell-select.selected {
+            outline: 3px solid rgba(25,135,84,.70);
+            outline-offset: -3px;
+            background: rgba(25,135,84,.12);
+        }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        (function () {
+            const ddlMacro = document.getElementById("ddlMacro");
+            const ddlSub = document.getElementById("ddlSub");
+            const btnMostra = document.getElementById("btnMostra");
+            const subHint = document.getElementById("subHint");
+
+            async function loadSubCategorie(macroId) {
+                ddlSub.innerHTML = '<option value="">-- Seleziona --</option>';
+                ddlSub.disabled = true;
+                btnMostra.disabled = true;
+
+                if (!macroId) {
+                    subHint.textContent = "Selezionare prima una macrocategoria.";
+                    return;
+                }
+
+                subHint.textContent = "Caricamento sottocategorie...";
+
+                try {
+                    const res = await fetch(`@Url.Action("GetSubCategorie", "Utente")?macroId=${encodeURIComponent(macroId)}`, {
+                        headers: { "Accept": "application/json" }
+                    });
+
+                    if (!res.ok) throw new Error("Errore caricamento sottocategorie.");
+
+                    const items = await res.json();
+
+                    for (const it of items) {
+                        const opt = document.createElement("option");
+                        opt.value = it.id;
+                        opt.textContent = it.nome;
+                        ddlSub.appendChild(opt);
+                    }
+
+                    ddlSub.disabled = false;
+                    subHint.textContent = items.length
+                        ? "Selezionare una sottocategoria."
+                        : "Nessuna sottocategoria trovata.";
+                } catch (e) {
+                    subHint.textContent = "Errore nel caricamento sottocategorie.";
+                    console.error(e);
+                }
+            }
+
+            if (ddlMacro) {
+                ddlMacro.addEventListener("change", function () {
+                    loadSubCategorie(this.value);
+                });
+            }
+
+            if (ddlSub) {
+                ddlSub.addEventListener("change", function () {
+                    btnMostra.disabled = !this.value;
+                });
+            }
+
+            if (ddlSub && ddlSub.value) {
+                btnMostra.disabled = false;
+            }
+        })();
+
+        (function () {
+            const table = document.getElementById("matrix");
+            if (!table) return;
+
+            const btn = document.getElementById("btnCreaPreventivo");
+            const hint = document.getElementById("selHint");
+            const docsBox = document.getElementById("documentiBox");
+
+            const hRow = document.getElementById("SelectedRowKey");
+            const hCol = document.getElementById("SelectedColKey");
+            const hVal = document.getElementById("SelectedValue");
+
+            function clearSelection() {
+                table.querySelectorAll("td.cell-select.selected")
+                    .forEach(td => td.classList.remove("selected"));
+            }
+
+            function selectCell(td) {
+                clearSelection();
+                td.classList.add("selected");
+
+                hRow.value = td.dataset.row || "";
+                hCol.value = td.dataset.col || "";
+                hVal.value = td.dataset.value || "";
+
+                btn.disabled = false;
+                hint.textContent = `Selezione: riga "${hRow.value}", colonna "${hCol.value}", valore "${hVal.value}"`;
+
+                if (docsBox) {
+                    docsBox.style.display = "block";
+                }
+            }
+
+            table.addEventListener("click", function (e) {
+                const td = e.target.closest("td.cell-select");
+                if (!td) return;
+                selectCell(td);
+            });
+
+            table.addEventListener("keydown", function (e) {
+                if (e.key !== "Enter" && e.key !== " ") return;
+                const td = e.target.closest("td.cell-select");
+                if (!td) return;
+                e.preventDefault();
+                selectCell(td);
+            });
+        })();
+    </script>
+}

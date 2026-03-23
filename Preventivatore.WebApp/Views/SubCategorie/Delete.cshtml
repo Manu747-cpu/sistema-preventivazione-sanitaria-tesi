@@ -1,0 +1,17 @@
+﻿@model Preventivatore.Core.Entities.SubCategoria
+
+@{
+    ViewData["Title"] = "Elimina Sottocategoria";
+    var macroId = Model.MacroCategoriaPolizzaId;
+}
+
+<h1>Elimina Sottocategoria</h1>
+<div class="alert alert-danger">
+    Sei sicuro di voler eliminare la sottocategoria "<strong>@Model.Nome</strong>"?
+</div>
+
+<form asp-action="DeleteConfirmed" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Elimina</button>
+    <a asp-action="Index" asp-route-macroId="@macroId" class="btn btn-secondary">Annulla</a>
+</form>

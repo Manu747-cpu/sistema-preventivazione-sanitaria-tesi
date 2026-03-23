@@ -1,0 +1,123 @@
+@model IEnumerable<Preventivatore.WebApp.ViewModels.AdminPreventivoViewModel>
+
+@{
+    ViewData["Title"] = "Preventivi (Admin)";
+    var q = ViewBag.Q as string;
+    var stato = ViewBag.Stato as string;
+}
+
+<h1 class="mb-3">Preventivi (Admin)</h1>
+
+<form method="get" class="row g-2 mb-3">
+    <div class="col-md-6">
+        <input name="q"
+               value="@q"
+               class="form-control"
+               placeholder="Cerca (sottocategoria, riga, colonna, valore, username, email)..." />
+    </div>
+
+    <div class="col-md-3">
+        <select name="stato" class="form-select">
+            <option value="">-- Stato (tutti) --</option>
+            <option value="Bozza" selected="@(stato == "Bozza")">Bozza</option>
+            <option value="Confermato" selected="@(stato == "Confermato")">Confermato</option>
+            <option value="Rifiutato" selected="@(stato == "Rifiutato")">Rifiutato</option>
+        </select>
+    </div>
+
+    <div class="col-md-3 d-flex gap-2">
+        <button class="btn btn-primary" type="submit">Filtra</button>
+        <a class="btn btn-outline-secondary" asp-action="Index">Reset</a>
+    </div>
+</form>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info shadow-sm">
+        Nessun preventivo trovato.
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped align-middle shadow-sm">
+            <thead class="table-light">
+                <tr>
+                    <th>ID</th>
+                    <th style="width:180px">Username</th>
+                    <th style="width:240px">Email</th>
+                    <th>Sottocategoria</th>
+                    <th>Riga</th>
+                    <th>Colonna</th>
+                    <th>Valore</th>
+                    <th>Data</th>
+                    <th style="width:240px">Stato</th>
+                    <th style="width:180px">Azioni</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var p in Model)
+                {
+                    var badgeClass = p.Stato switch
+                    {
+                        "Confermato" => "bg-success",
+                        "Rifiutato" => "bg-danger",
+                        _ => "bg-secondary"
+                    };
+
+                    <tr>
+                        <td>@p.Id</td>
+                        <td>@p.UserName</td>
+                        <td class="text-break-anywhere">
+                            <span class="text-muted small">@p.Email</span>
+                        </td>
+                        <td>@p.SubCategoriaNome</td>
+                        <td>@p.RowKey</td>
+                        <td>@p.ColKey</td>
+                        <td>@p.Value</td>
+                        <td>@p.DataCreazione.ToString("dd/MM/yyyy HH:mm:ss")</td>
+
+                        <td>
+                            <div class="mb-2">
+                                <span class="badge @badgeClass">@p.Stato</span>
+                            </div>
+
+                            <form asp-action="CambiaStato" method="post" class="d-flex gap-2">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@p.Id" />
+
+                                <select name="stato" class="form-select form-select-sm">
+                                    <option value="Bozza" selected="@(p.Stato == "Bozza")">Bozza</option>
+                                    <option value="Confermato" selected="@(p.Stato == "Confermato")">Confermato</option>
+                                    <option value="Rifiutato" selected="@(p.Stato == "Rifiutato")">Rifiutato</option>
+                                </select>
+
+                                <button class="btn btn-sm btn-outline-success" type="submit">Salva</button>
+                            </form>
+                        </td>
+
+                        <td>
+                            <div class="d-flex gap-2 flex-wrap">
+                                <a class="btn btn-sm btn-outline-primary"
+                                   asp-action="Dettagli"
+                                   asp-route-id="@p.Id">
+                                    Dettagli
+                                </a>
+
+                                <form asp-action="Elimina"
+                                      method="post"
+                                      class="d-inline"
+                                      onsubmit="return confirm('Eliminare definitivamente questo preventivo?');">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@p.Id" />
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Elimina</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

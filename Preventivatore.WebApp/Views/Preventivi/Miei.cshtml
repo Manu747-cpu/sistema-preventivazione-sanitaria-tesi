@@ -1,0 +1,78 @@
+@model IEnumerable<Preventivatore.Core.Entities.PreventivoMvp>
+
+@{
+    ViewData["Title"] = "I miei preventivi";
+}
+
+<h1 class="mb-3">I miei preventivi</h1>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info shadow-sm">
+        Non sono presenti preventivi.
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped align-middle shadow-sm">
+            <thead class="table-light">
+                <tr>
+                    <th>ID</th>
+                    <th>Sottocategoria</th>
+                    <th>Riga</th>
+                    <th>Colonna</th>
+                    <th>Valore</th>
+                    <th>Data</th>
+                    <th>Stato</th>
+                    <th style="width:200px">Azioni</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var p in Model)
+                {
+                    var badgeClass = p.Stato switch
+                    {
+                        "Confermato" => "bg-success",
+                        "Rifiutato" => "bg-danger",
+                        _ => "bg-secondary"
+                    };
+
+                    <tr>
+                        <td>@p.Id</td>
+                        <td>@p.SubCategoriaNome</td>
+                        <td>@p.RowKey</td>
+                        <td>@p.ColKey</td>
+                        <td>@p.Value</td>
+                        <td>@p.DataCreazione.ToString("dd/MM/yyyy HH:mm:ss")</td>
+                        <td>
+                            <span class="badge @badgeClass">
+                                @p.Stato
+                            </span>
+                        </td>
+                        <td>
+                            <div class="d-flex gap-2 flex-wrap">
+                                <a class="btn btn-sm btn-outline-primary"
+                                   asp-action="Dettagli"
+                                   asp-route-id="@p.Id">
+                                    Dettagli
+                                </a>
+
+                                <form asp-action="Elimina"
+                                      method="post"
+                                      class="d-inline"
+                                      onsubmit="return confirm('Eliminare questo preventivo?');">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@p.Id" />
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                        Elimina
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

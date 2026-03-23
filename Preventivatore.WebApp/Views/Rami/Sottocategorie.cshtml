@@ -1,0 +1,22 @@
+﻿@model IEnumerable<Preventivatore.Core.Entities.SubCategoria>
+@{
+    ViewData["Title"] = "Scegli una Sottocategoria";
+    int macroId = ViewBag.MacroId;
+}
+<h1>@ViewData["Title"]</h1>
+<p>
+    <a asp-action="Macrocategorie" class="btn btn-secondary">
+        ← Torna alle Macrocategorie
+    </a>
+</p>
+<ul class="list-group">
+    @foreach (var s in Model)
+    {
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            @s.Nome
+            <a asp-action="Tabella" asp-route-subId="@s.Id" class="btn btn-sm btn-primary">
+                Vai alla tabella
+            </a>
+        </li>
+    }
+</ul>
