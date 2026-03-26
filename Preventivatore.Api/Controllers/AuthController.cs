@@ -39,7 +39,6 @@ namespace Preventivatore.Api.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            // Se il ruolo non esiste, lo creo
             if (!await _roleManager.RoleExistsAsync(dto.Role))
             {
                 var roleResult = await _roleManager.CreateAsync(new IdentityRole(dto.Role));
