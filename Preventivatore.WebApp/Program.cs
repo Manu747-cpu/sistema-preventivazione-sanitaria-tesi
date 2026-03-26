@@ -85,7 +85,7 @@ builder.Services.AddRazorPages();
 
 var app = builder.Build();
 
-// —— SEEDING RUOLI E UTENTI (MVP: SOLO Admin/Customer) ————————————————
+//  SEEDING RUOLI E UTENTI 
 using (var scope = app.Services.CreateScope())
 {
     var roleMgr = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
@@ -97,7 +97,7 @@ using (var scope = app.Services.CreateScope())
             await roleMgr.CreateAsync(new IdentityRole(roleName));
     }
 
-    // cliente1 → Customer
+
     const string cliUser = "cliente1";
     const string cliEmail = "cliente1@example.com";
     const string cliPwd = "Cliente123!";
@@ -114,7 +114,7 @@ using (var scope = app.Services.CreateScope())
             await userMgr.AddToRoleAsync(cliente, "Customer");
     }
 
-    // admin1 → Admin
+
     const string admUser = "admin1";
     const string admEmail = "admin1@example.com";
     const string admPwd = "Admin123!";
@@ -131,7 +131,6 @@ using (var scope = app.Services.CreateScope())
             await userMgr.AddToRoleAsync(admin1, "Admin");
     }
 }
-// ————————————————————————————————————————————————————————————————
 
 if (!app.Environment.IsDevelopment())
 {
