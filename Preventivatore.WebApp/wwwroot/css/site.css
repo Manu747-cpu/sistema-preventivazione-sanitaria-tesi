@@ -1,5 +1,27 @@
-﻿/* wwwroot/css/site.css */
+/* wwwroot/css/site.css */
 
+/* ===== Layout globale ===== */
+html,
+body {
+    height: 100%;
+}
+
+body.app-shell {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+}
+
+.app-main {
+    flex: 1 0 auto;
+}
+
+.app-footer {
+    flex-shrink: 0;
+}
+
+/* ===== Sezioni generiche ===== */
 .hero-section {
     background-color: #fcf9f4;
 }
