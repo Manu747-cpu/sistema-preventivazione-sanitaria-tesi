@@ -1,7 +1,7 @@
 @model Preventivatore.WebApp.ViewModels.PolizzaFormViewModel
 
 @{
-    ViewData["Title"] = "Dettagli Polizza";
+    ViewData["Title"] = "Dettagli Copertura professionale";
 }
 
 <h1 class="mb-3">@ViewData["Title"]</h1>
@@ -22,7 +22,7 @@
                 @(string.IsNullOrWhiteSpace(Model.Descrizione) ? "Nessuna descrizione." : Model.Descrizione)
             </dd>
 
-            <dt class="col-sm-3">Macrocategoria</dt>
+            <dt class="col-sm-3">Categorie professionali</dt>
             <dd class="col-sm-9">
                 @(string.IsNullOrWhiteSpace(Model.MacroCategoriaNome) ? "Non disponibile" : Model.MacroCategoriaNome)
             </dd>
@@ -33,7 +33,7 @@
             <dt class="col-sm-3">% Admin</dt>
             <dd class="col-sm-9">@Model.PercentualeAdmin.ToString("0.##") %</dd>
 
-            <dt class="col-sm-3">Servizi aggiuntivi</dt>
+            <dt class="col-sm-3">Coperture accessorie</dt>
             <dd class="col-sm-9">
                 @if (Model.ServiziAggiuntiviNomi != null && Model.ServiziAggiuntiviNomi.Any())
                 {

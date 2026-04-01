@@ -1,5 +1,4 @@
-﻿// Preventivatore.Api/Program.cs (MVP: SOLO Admin + Customer)
-// ✅ pulito: niente duplicati DbContext/DI, niente SuperAdmin, policy uniformi
+﻿// Preventivatore.Api/Program.cs
 
 using AspNetCoreRateLimit;
 using Azure.Storage.Blobs;
@@ -17,6 +16,7 @@ using Preventivatore.Infrastructure.Data.Models;
 using Preventivatore.Infrastructure.Repositories;
 using Preventivatore.Infrastructure.Services;
 using Preventivatore.Infrastructure.UnitOfWork;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
@@ -118,7 +118,54 @@ builder.Services.AddControllers()
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Preventivatore API", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "Sistema di preventivazione sanitaria API",
+        Version = "v1"
+    });
+
+    c.TagActionsBy(api =>
+    {
+        if (api.ActionDescriptor.RouteValues.TryGetValue("controller", out var controller))
+        {
+            return new[]
+            {
+                controller switch
+                {
+                    "Auth" => "Autenticazione",
+                    "Files" => "Documenti",
+                    "MacroCategorie" => "Categorie professionali",
+                    "Polizze" => "Coperture professionali",
+                    "Preventivo" => "Preventivi",
+                    "PreventivoFiles" => "Documenti preventivo",
+                    "SubCategorie" => "Coperture accessorie",
+                    _ => controller
+                }
+            };
+        }
+
+        return new[] { "API" };
+    });
+
+    c.CustomSchemaIds(type =>
+    {
+        return type.Name switch
+        {
+            "CreatePolizzaDto" => "CreateCoperturaProfessionaleDto",
+            "UpdatePolizzaDto" => "UpdateCoperturaProfessionaleDto",
+            "MacroCategoriaDto" => "CategoriaProfessionaleDto",
+            "SubCategoriaDto" => "CoperturaAccessoriaDto",
+            "CreatePreventivoDto" => "CreatePreventivoDto",
+            "PreventivoDto" => "PreventivoDto",
+            "PreventivoFileDto" => "DocumentoPreventivoDto",
+            "RegisterDto" => "RegisterDto",
+            "LoginDto" => "LoginDto",
+            "ProblemDetails" => "ProblemDetails",
+            _ => type.Name
+        };
+    });
+
+    c.DocumentFilter<SanitarySwaggerPathDocumentFilter>();
 });
 
 // ─── 10) Compression / caching / healthchecks ───────────────────────────────────
@@ -133,7 +180,7 @@ builder.Services.AddCors(options =>
         policy.WithOrigins(
                 "http://localhost:5288", "https://localhost:5288",
                 "http://localhost:5289", "https://localhost:5289",
-                "http://localhost:5273", "https://localhost:5273" // <-- aggiunto perché tu stai su 5273
+                "http://localhost:5273", "https://localhost:5273"
             )
             .AllowAnyHeader()
             .AllowAnyMethod()
@@ -148,15 +195,18 @@ using (var scope = app.Services.CreateScope())
 {
     var roleMgr = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
     foreach (var role in new[] { "Admin", "Customer" })
+    {
         if (!await roleMgr.RoleExistsAsync(role))
             await roleMgr.CreateAsync(new IdentityRole(role));
+    }
 }
 
 // ─── Middleware pipeline ────────────────────────────────────────────────────────
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Preventivatore API V1");
+    c.DocumentTitle = "Sistema di preventivazione sanitaria API";
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Sistema di preventivazione sanitaria API V1");
     c.RoutePrefix = string.Empty;
 });
 
@@ -190,3 +240,28 @@ app.MapHealthChecks("/health");
 app.MapControllers();
 
 app.Run();
+
+public sealed class SanitarySwaggerPathDocumentFilter : IDocumentFilter
+{
+    public void Apply(OpenApiDocument swaggerDoc, DocumentFilterContext context)
+    {
+        var updatedPaths = new OpenApiPaths();
+
+        foreach (var path in swaggerDoc.Paths)
+        {
+            var newKey = path.Key
+                .Replace("/api/MacroCategorie", "/api/CategorieProfessionali")
+                .Replace("/api/Polizze", "/api/CopertureProfessionali")
+                .Replace("/api/SubCategorie", "/api/CopertureAccessorie");
+
+            updatedPaths.Add(newKey, path.Value);
+        }
+
+        swaggerDoc.Paths.Clear();
+
+        foreach (var path in updatedPaths)
+        {
+            swaggerDoc.Paths.Add(path.Key, path.Value);
+        }
+    }
+}

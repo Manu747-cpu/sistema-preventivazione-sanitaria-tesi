@@ -1,21 +1,21 @@
 ﻿@model IEnumerable<Preventivatore.WebApp.ViewModels.PolizzaGridViewModel>
 
 @{
-    ViewData["Title"] = "Elenco Polizze";
+    ViewData["Title"] = "Elenco Coperture professionali";
 }
 
 <h1 class="mb-3">@ViewData["Title"]</h1>
 
 <div class="mb-3">
     <a asp-action="Create" class="btn btn-primary">
-        Nuova Polizza
+        Nuova Copertura professionale
     </a>
 </div>
 
 @if (!Model.Any())
 {
     <div class="alert alert-info shadow-sm">
-        Nessuna polizza presente.
+        Nessuna Copertura professionale presente.
     </div>
 }
 else
@@ -57,7 +57,7 @@ else
                                       asp-route-id="@p.Id"
                                       method="post"
                                       class="d-inline"
-                                      onsubmit="return confirm('Sei sicuro di voler eliminare questa polizza?');">
+                                      onsubmit="return confirm('Sei sicuro di voler eliminare questa Copertura professionale?');">
                                     @Html.AntiForgeryToken()
                                     <button type="submit"
                                             class="btn btn-sm btn-outline-danger">

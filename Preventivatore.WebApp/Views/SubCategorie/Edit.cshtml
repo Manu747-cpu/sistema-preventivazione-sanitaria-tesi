@@ -1,10 +1,10 @@
 ﻿@model Preventivatore.WebApp.ViewModels.SubCategoriaViewModel
 @{
     var isNew = Model.Id == 0;
-    ViewData["Title"] = (isNew ? "Nuova" : "Modifica") + " Sottocategoria";
+    ViewData["Title"] = (isNew ? "Nuova" : "Modifica") + " Profilo professionale";
 }
 
-<h1>@ViewData["Title"] per Macrocategoria @Model.MacroCategoriaPolizzaId</h1>
+<h1>@ViewData["Title"] per Categoria professionale @Model.MacroCategoriaPolizzaId</h1>
 
 <form asp-action="Edit" method="post">
     <input asp-for="Id" type="hidden" />

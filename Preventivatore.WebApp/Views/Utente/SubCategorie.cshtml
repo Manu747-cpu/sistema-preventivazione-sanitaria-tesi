@@ -1,6 +1,6 @@
 ﻿@model Preventivatore.WebApp.ViewModels.SubCategorieViewModel
 @{
-    ViewData["Title"] = "Elenco sottocategorie";
+    ViewData["Title"] = "Elenco profili sanitari";
 }
 
 <h1>@ViewData["Title"]</h1>
@@ -10,7 +10,7 @@
     <input type="hidden" asp-for="MacroCategoriaId" />
 
     <div class="mb-3">
-        <label asp-for="SelectedId" class="form-label">Sottocategoria</label>
+        <label asp-for="SelectedId" class="form-label">Profilo professionale</label>
         <select asp-for="SelectedId"
                 asp-items="Model.SubCategorie"
                 class="form-select">

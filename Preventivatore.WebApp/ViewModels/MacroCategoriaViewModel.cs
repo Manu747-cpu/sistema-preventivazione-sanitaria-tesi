@@ -19,7 +19,6 @@ namespace Preventivatore.WebApp.ViewModels
         [Display(Name = "Image")]
         public IFormFile? Image { get; set; }
 
-        // **NUOVO**: lista di sottocategorie
         public List<SubCategoriaViewModel> SubCategorie { get; set; } = new();
     }
 }

@@ -1,7 +1,7 @@
 ﻿@model Preventivatore.WebApp.ViewModels.UtenteCombinedViewModel
 
 @{
-    ViewData["Title"] = "Scegli Categoria e Sottocategoria";
+    ViewData["Title"] = "Scegli Categoria professionale e profilo";
     var hasDocs = Model.DocumentiDisponibili != null && Model.DocumentiDisponibili.Any();
 }
 
@@ -11,7 +11,7 @@
     @Html.AntiForgeryToken()
 
     <div class="mb-3">
-        <label asp-for="SelectedMacroId" class="form-label">Macrocategoria</label>
+        <label asp-for="SelectedMacroId" class="form-label">Categoria professionale</label>
         <select asp-for="SelectedMacroId"
                 asp-items="Model.MacroCategorie"
                 class="form-select"
@@ -21,7 +21,7 @@
     </div>
 
     <div class="mb-3">
-        <label asp-for="SelectedSubId" class="form-label">Sottocategoria</label>
+        <label asp-for="SelectedSubId" class="form-label">Profilo professionale</label>
         <select asp-for="SelectedSubId"
                 asp-items="Model.SubCategorie"
                 class="form-select"
@@ -31,11 +31,11 @@
         <div id="subHint" class="form-text text-muted">
             @if (Model.SelectedMacroId.HasValue)
             {
-                <text>Selezionare una sottocategoria.</text>
+                <text>Selezionare un profilo professionale.</text>
             }
             else
             {
-                <text>Selezionare prima una macrocategoria.</text>
+                <text>Selezionare prima una Categoria professionale.</text>
             }
         </div>
     </div>
@@ -95,7 +95,7 @@
                     <thead class="table-light">
                         <tr>
                             <th>Nome file</th>
-                            <th>Polizza</th>
+                            <th>Copertura professionale</th>
                             <th style="width:140px">Azione</th>
                         </tr>
                     </thead>
@@ -170,18 +170,18 @@
                 btnMostra.disabled = true;
 
                 if (!macroId) {
-                    subHint.textContent = "Selezionare prima una macrocategoria.";
+                    subHint.textContent = "Selezionare prima una Categoria professionale.";
                     return;
                 }
 
-                subHint.textContent = "Caricamento sottocategorie...";
+                subHint.textContent = "Caricamento coperture accessorie...";
 
                 try {
                     const res = await fetch(`@Url.Action("GetSubCategorie", "Utente")?macroId=${encodeURIComponent(macroId)}`, {
                         headers: { "Accept": "application/json" }
                     });
 
-                    if (!res.ok) throw new Error("Errore caricamento sottocategorie.");
+                    if (!res.ok) throw new Error("Errore caricamento profili sanitari.");
 
                     const items = await res.json();
 
@@ -194,10 +194,10 @@
 
                     ddlSub.disabled = false;
                     subHint.textContent = items.length
-                        ? "Selezionare una sottocategoria."
-                        : "Nessuna sottocategoria trovata.";
+                        ? "Selezionare un Profilo professionale."
+                        : "Nessun Profilo professionale trovato.";
                 } catch (e) {
-                    subHint.textContent = "Errore nel caricamento sottocategorie.";
+                    subHint.textContent = "Errore nel caricamento profili sanitari.";
                     console.error(e);
                 }
             }

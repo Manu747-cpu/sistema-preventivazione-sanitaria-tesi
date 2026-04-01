@@ -17,7 +17,7 @@ public class RamiController : Controller
     // 2.1) Home cliente
     public IActionResult Index()
     {
-        return View();  // vedasi Views/Rami/Index.cshtml
+        return View();  
     }
 
     // 2.2) Elenco macrocategorie

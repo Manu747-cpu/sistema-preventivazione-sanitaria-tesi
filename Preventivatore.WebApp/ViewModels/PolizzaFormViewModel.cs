@@ -17,7 +17,7 @@ namespace Preventivatore.WebApp.ViewModels
         public string? Descrizione { get; set; }
 
         [Required]
-        [Display(Name = "Macrocategoria")]
+        [Display(Name = "Categorie professionali")]
         public int MacroCategoriaId { get; set; }
 
         public string? MacroCategoriaNome { get; set; }
@@ -32,7 +32,7 @@ namespace Preventivatore.WebApp.ViewModels
         [Range(0, 100)]
         public decimal PercentualeAdmin { get; set; }
 
-        [Display(Name = "Servizi Aggiuntivi")]
+        [Display(Name = "coperture accessorie")]
         public List<int> SelectedServizi { get; set; } = new();
 
         public IEnumerable<SelectListItem> ServiziAggiuntivi { get; set; } = new List<SelectListItem>();

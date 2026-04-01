@@ -1,7 +1,7 @@
 ﻿@model Preventivatore.WebApp.ViewModels.PolizzaFormViewModel
 
 @{
-    ViewData["Title"] = "Modifica Polizza";
+    ViewData["Title"] = "Modifica Copertura professionale";
 }
 
 <h1>@ViewData["Title"]</h1>
@@ -46,7 +46,7 @@
         </div>
     </div>
 
-    <h5 class="mt-4">Servizi Aggiuntivi</h5>
+    <h5 class="mt-4">Coperture accessorie</h5>
     <div class="mb-3">
         @if (Model.ServiziAggiuntivi != null && Model.ServiziAggiuntivi.Any())
         {
@@ -70,7 +70,7 @@
 
     <h5 class="mt-4">Aggiungi nuovi documenti</h5>
     <div class="mb-3">
-        <label asp-for="Documenti" class="form-label">Documenti Polizza</label>
+        <label asp-for="Documenti" class="form-label">Documenti Copertura professionale</label>
         <input asp-for="Documenti"
                type="file"
                multiple

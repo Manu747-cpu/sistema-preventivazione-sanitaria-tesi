@@ -37,7 +37,7 @@ namespace Preventivatore.WebApp.Controllers
                 .FirstOrDefaultAsync();
 
             if (string.IsNullOrWhiteSpace(subNome))
-                return BadRequest("Sottocategoria non valida.");
+                return BadRequest("Profilo professionale non valida.");
 
             var p = new Core.Entities.PreventivoMvp
             {

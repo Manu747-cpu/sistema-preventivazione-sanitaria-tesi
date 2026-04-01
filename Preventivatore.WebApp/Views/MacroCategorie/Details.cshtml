@@ -2,7 +2,7 @@
 @using System
 
 @{
-    ViewData["Title"] = "Dettagli Macrocategoria";
+    ViewData["Title"] = "Dettagli Categorie professionali";
 
     string? imageUrl = null;
 
@@ -72,14 +72,14 @@
 
 <hr />
 
-<h2>Sottocategorie</h2>
+<h2>profili sanitari</h2>
 
 <p>
     <a asp-controller="SubCategorie"
        asp-action="Index"
        asp-route-macroId="@Model.Id"
        class="btn btn-info">
-        Gestisci Sottocategorie
+        Gestisci coperture accessorie
     </a>
 </p>
 
@@ -112,7 +112,7 @@
                               class="d-inline">
                             <button type="submit"
                                     class="btn btn-sm btn-danger"
-                                    onclick="return confirm('Eliminare la sottocategoria @sub.Nome?');">
+                                    onclick="return confirm('Eliminare il Profilo professionale @sub.Nome?');">
                                 <i class="bi bi-trash"></i> Elimina
                             </button>
                         </form>
@@ -124,7 +124,7 @@
         {
             <tr>
                 <td colspan="2" class="text-center text-muted">
-                    Nessuna sottocategoria.
+                    Nessun Profilo professionale.
                 </td>
             </tr>
         }

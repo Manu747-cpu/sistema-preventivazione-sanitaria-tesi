@@ -1,13 +1,13 @@
 ﻿@model Preventivatore.Core.Entities.SubCategoria
 
 @{
-    ViewData["Title"] = "Elimina Sottocategoria";
+    ViewData["Title"] = "Elimina Profilo professionale";
     var macroId = Model.MacroCategoriaPolizzaId;
 }
 
-<h1>Elimina Sottocategoria</h1>
+<h1>Elimina Profilo professionale</h1>
 <div class="alert alert-danger">
-    Sei sicuro di voler eliminare la sottocategoria "<strong>@Model.Nome</strong>"?
+    Sei sicuro di voler eliminare il Profilo professionale "<strong>@Model.Nome</strong>"?
 </div>
 
 <form asp-action="DeleteConfirmed" method="post">

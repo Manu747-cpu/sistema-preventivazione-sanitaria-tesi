@@ -10,8 +10,8 @@ namespace Preventivatore.WebApp.ViewModels
         // arriverà dal form precedente
         public int MacroCategoriaId { get; set; }
 
-        [Required(ErrorMessage = "Devi selezionare una sottocategoria")]
-        [Display(Name = "Sottocategoria")]
+        [Required(ErrorMessage = "Devi selezionare un Profilo professionale")]
+        [Display(Name = "Profilo professionale")]
         public string SelectedId { get; set; } = "";
 
         public List<SelectListItem> SubCategorie { get; set; }

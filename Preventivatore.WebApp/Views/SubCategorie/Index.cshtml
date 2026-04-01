@@ -1,15 +1,15 @@
 ﻿@model IEnumerable<Preventivatore.WebApp.ViewModels.SubCategoriaIndexViewModel>
 
 @{
-    ViewData["Title"] = "Sottocategorie";
+    ViewData["Title"] = "profili sanitari";
     var macroId = ViewBag.MacroId as int? ?? 0;
 }
 
-<h1>Sottocategorie per Macrocategoria @macroId</h1>
+<h1>Profili sanitari per Categorie professionali @macroId</h1>
 
 <p>
-    <a asp-action="Create" asp-route-macroId="@macroId" class="btn btn-primary">Nuova Sottocategoria</a>
-    <a asp-controller="MacroCategorie" asp-action="Index" class="btn btn-secondary">Torna a Macrocategorie</a>
+    <a asp-action="Create" asp-route-macroId="@macroId" class="btn btn-primary">Nuovo Profilo professionale</a>
+    <a asp-controller="MacroCategorie" asp-action="Index" class="btn btn-secondary">Torna a Categorie professionali</a>
 </p>
 
 <table class="table table-striped">

@@ -17,7 +17,6 @@ public class ClienteController : Controller
         return View(cats);
     }
 
-    // 2) Lista Sottocategorie per macroId
     public async Task<IActionResult> Sottocategorie(int macroId)
     {
         var subs = await _ctx.SubCategorie

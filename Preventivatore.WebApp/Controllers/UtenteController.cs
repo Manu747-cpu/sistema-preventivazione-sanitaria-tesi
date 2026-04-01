@@ -125,7 +125,6 @@ namespace Preventivatore.WebApp.Controllers
             return View(vm);
         }
 
-        // AJAX: sottocategorie per macrocategoria
         [HttpGet]
         public async Task<IActionResult> GetSubCategorie(int macroId)
         {
